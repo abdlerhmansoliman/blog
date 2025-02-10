@@ -22,6 +22,15 @@
         <label  class="form-lable">Confirm Password</label>
         <input name="password_confirmation" type="password" class="form-control"required >
      </div>
+     @if ($errors->any())
+     <div class="">
+         <ul class="mb-0">
+             @foreach ($errors->all() as $error)
+                 <li>{{ $error }}</li>
+             @endforeach
+         </ul>
+     </div>
+ @endif
 
      <button  class="btn btn-success">Resigter</button >
 </form>

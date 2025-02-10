@@ -19,10 +19,11 @@
                 <div>
                 <a class="nav-link active" href="{{route('index')}}">All Posts</a>
             </div>
-            @guest
 
             </div>
-            <div class="navbar-nav ms-auto">    
+            <div class="navbar-nav ms-auto">
+            @guest
+
                 <a class="nav-link active" href="login">Log In</a>
                 <a class="nav-link active" href="register">Register</a>                 
             @endguest

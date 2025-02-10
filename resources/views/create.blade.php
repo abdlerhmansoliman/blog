@@ -22,16 +22,7 @@
         <br>
         <textarea name="desc" class="form-control" >{{old('desc')}}</textarea>
      </div>  
-       <div class="mb-3">
-        <label class="form-lable">Post Creator</label>
-        <select name="creator" id="" class="form-control">
-         
-         @foreach ($users as $user)
-         <option value="{{$user->id}}">{{$user->name}}</option>
-            
-         @endforeach
-        </select>
-     </div>
+
      <button class="btn btn-success">Submit</button>
 </form>
 </x-app>

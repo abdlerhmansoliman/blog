@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
@@ -32,48 +33,57 @@ class PostController extends Controller
         request()->validate([
             'title'=>['required','min:4'],
             'desc'=>['required','min:10'],
-            'creator'=>['required','exists:users,id']
         ]);
         $title=request('title');
         $desc=request('desc');
-        $creator=request('creator');
         Post::create([
             'title'=>$title,
             'desc'=>$desc,
-            'user_id'=>$creator
+            'user_id'=>Auth::id(),
         ]);
      
 
         return to_route(route:'index');
     }
-    public function edit(Post $post){
-        $users=User::all();
+    public function edit($id){
+        $post=Post::findOrfail($id);
 
-        return view('edit',['users'=>$users,'post'=>$post]);
+        if($post->user_id != Auth::id()){
+            return redirect()->rounte('index')->with('error','Unauthorized Access!');
+
+        }
+        return view('edit',['post'=>$post]);
     }
-    public function update($postId){
+
+
+    public function update(Request $request, $id){
+        $post = Post::findOrFail($id);
+
+        
+        if ($post->user_id != Auth::id()) {
+            return redirect()->route('index')->with('error', 'Unauthorized Access!');
+        }
         request()->validate([
             'title'=>['required','min:4'],
             'desc'=>['required','min:10'],
             'creator'=>['required','exists:users,id']
 
+        ]); 
+        $post->update([
+            'title' => $request->title,
+            'desc' => $request->desc,
         ]);
-        $title=request()->title;
-        $desc=request()->desc;
-        $creator=request()->creator;
-        $singlePostFromDB=Post::find($postId);
-        $singlePostFromDB->update([
-            'title'=>$title,
-            'desc'=>$desc,
-            'user_id'=>$creator
-        ]);
-        return to_route('show',$postId);
+        return to_route('show',$post->id)->with('success', 'Post updated successfully!');
         
     }
-    public function destroy($postId){
-        $post=Post::find($postId);
+    public function destroy($id){
+        $post=Post::findOrFail($id);
+        if($post->user_id!=Auth::id()){
+            return redirect()->route('index')->with('error', 'Unauthorized Access!');
+
+        }
         $post->delete();
-        return to_route('index');
+        return redirect()->route('index')->with('success', 'Post deleted successfully!');
     }
 
 }

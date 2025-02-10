@@ -23,16 +23,18 @@
           <td>{{$post->user ? $post->user->name: 'not found'}}</td>
           <td>{{$post->created_at->format('y-m-d')}}</td>
           <td>
-            <a href="{{route("show",$post->id)}}" class="btn btn-info">View</a>
-            <a href="{{route('edit',$post->id)}}" class="btn btn-primary">Edit</a>
-            <form style="display:inline" method="POST" action="{{route('destroy',$post->id)}}">
-              @csrf
-              @method('DELETE')
-              
-              <button  class="btn btn-danger">Delete</button>
+            <a href="{{ route('show', $post->id) }}" class="btn btn-info">View</a>
 
-            </form>
-           </td>
+            @if(Auth::id() == $post->user_id) 
+                <a href="{{ route('edit', $post->id) }}" class="btn btn-primary">Edit</a>
+
+                <form style="display:inline" method="POST" action="{{ route('destroy', $post->id) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            @endif
+        </td>
         </tr>
         @endforeach
 
